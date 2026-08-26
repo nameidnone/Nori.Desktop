@@ -1,0 +1,316 @@
+[project]
+name = "nori-desktop-pet"
+version = "1.0.0"
+description = "Nori Desktop Pet - Python/C++ Rewrite with 100% UI/UX Preservation"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [
+    { name = "Nori Team" }
+]
+keywords = ["desktop-pet", "live2d", "ai-agent", "pyqt6", "cpp"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: C++",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS :: MacOS X",
+]
+
+# Core dependencies (runtime)
+dependencies = [
+    # GUI Framework - PyQt6 for 100% UI reproduction
+    "PyQt6>=6.7.0",
+    "PyQt6-WebEngine>=6.7.0",
+    
+    # Async SQLite for database operations
+    "aiosqlite>=0.20.0",
+    
+    # HTTP client for LLM APIs and MCP
+    "httpx>=0.27.0",
+    
+    # Cryptography for AES-256-GCM encryption
+    "cryptography>=42.0.0",
+    
+    # System keyring for secure credential storage
+    "keyring>=25.0.0",
+    
+    # YAML parsing for config files
+    "pyyaml>=6.0.0",
+    
+    # Cron expression parsing for automation
+    "croniter>=2.0.0",
+    
+    # HTML parsing for knowledge chunking
+    "beautifulsoup4>=4.12.0",
+    "lxml>=5.0.0",
+    
+    # Markdown processing
+    "markdown>=3.6.0",
+    
+    # Type hints utilities
+    "typing-extensions>=4.12.0",
+    
+    # Logging with structured output
+    "structlog>=24.0.0",
+    
+    # Environment variable management
+    "python-dotenv>=1.0.0",
+    
+    # Vector similarity for memory retrieval
+    "numpy>=1.26.0",
+    
+    # JSON schema validation
+    "jsonschema>=4.22.0",
+]
+
+# Development dependencies
+[project.optional-dependencies]
+dev = [
+    # Build tools
+    "setuptools>=70.0.0",
+    "wheel>=0.43.0",
+    "cmake>=3.28.0",
+    "ninja>=1.12.0",
+    
+    # C++ binding generation
+    "pybind11>=2.13.0",
+    
+    # Compilation to native binary (performance boost 30-50%)
+    "nuitka>=2.4.0",
+    "ordered-set>=4.1.0",
+    "zstandard>=0.22.0",
+    
+    # Packaging
+    "pyinstaller>=6.8.0",
+    "upx>=4.2.0; platform_system != 'Darwin'",
+    
+    # Testing
+    "pytest>=8.2.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-cov>=5.0.0",
+    "pytest-qt>=4.3.0",
+    "httpx>=0.27.0",
+    "aresponses>=2.1.6",
+    
+    # Type checking
+    "mypy>=1.10.0",
+    "types-PyYAML>=6.0.0",
+    "types-croniter>=2.0.0",
+    "types-jsonschema>=4.22.0",
+    
+    # Code quality
+    "ruff>=0.5.0",
+    "black>=24.4.0",
+    "isort>=5.13.0",
+    
+    # Documentation
+    "sphinx>=7.3.0",
+    "sphinx-autodoc-typehints>=2.2.0",
+]
+
+build = [
+    "setuptools>=70.0.0",
+    "wheel>=0.43.0",
+    "cmake>=3.28.0",
+    "ninja>=1.12.0",
+    "pybind11>=2.13.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/nori-desktop-pet/nori-desktop-pet"
+Repository = "https://github.com/nori-desktop-pet/nori-desktop-pet"
+Documentation = "https://github.com/nori-desktop-pet/nori-desktop-pet/docs"
+
+[project.scripts]
+nori-desktop = "nori_desktop.__main__:main"
+
+[build-system]
+requires = ["setuptools>=70.0.0", "wheel>=0.43.0", "cmake>=3.28.0", "ninja>=1.12.0", "pybind11>=2.13.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["nori_core*", "nori_desktop*"]
+
+[tool.setuptools.package-data]
+nori_desktop = ["*.qss", "*.qml", "assets/**/*"]
+"*" = ["*.pyi", "py.typed"]
+
+# Nuitka compilation configuration
+[tool.nuitka]
+module-name = "nori_desktop"
+include-package = ["nori_core", "nori_desktop"]
+include-package-data = true
+standalone = true
+onefile = true
+output-dir = "./dist"
+enable-plugins = ["pyqt6", "numpy"]
+disable-console = false
+windows-disable-console = true
+macos-create-app-bundle = true
+linux-onefile-icon = "./src/nori_desktop/assets/icon.png"
+assume-yes-for-downloads = true
+run = false
+
+# Optimization flags
+python-flag = ["-O", "-Wignore"]
+debug = false
+profile = false
+
+# Memory and performance
+force-stderr-to-stdout = true
+unencrypted-cache = false
+
+# Include hidden imports
+include-module = [
+    "cryptography.hazmat.bindings._rust",
+    "httpx._transports.default",
+    "aiosqlite.core",
+]
+
+# Exclude unnecessary modules
+exclude-module = [
+    "tkinter",
+    "test",
+    "tests",
+    "unittest",
+    "doctest",
+]
+
+# PyInstaller alternative spec (fallback)
+[tool.pyinstaller]
+name = "NoriDesktop"
+console = true
+windowed = false
+icon = "./src/nori_desktop/assets/icon.ico"
+add-data = [
+    ["src/nori_desktop/assets:assets", ":"],
+    ["src/nori_desktop/qss:qss", ":"],
+]
+hidden-import = [
+    "cryptography.hazmat.bindings._rust",
+    "httpx._transports.default",
+    "aiosqlite.core",
+    "PyQt6.QtWebEngineWidgets",
+]
+
+# Testing configuration
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = [
+    "-v",
+    "--cov=src",
+    "--cov-report=term-missing",
+    "--cov-report=html:reports/coverage",
+    "--cov-report=xml:reports/coverage.xml",
+    "--junitxml=reports/junit.xml",
+]
+qt_api = "pyqt6"
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "e2e: marks tests as end-to-end tests",
+    "requires_cpp: marks tests that require C++ extension",
+]
+
+# Type checking configuration
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_return_any = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+show_error_codes = true
+show_column_numbers = true
+pretty = true
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = [
+    "PyQt6.*",
+    "PyQt6.QtWebEngineWidgets.*",
+    "numpy.*",
+]
+ignore_missing_imports = true
+
+# Code formatting configuration
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | cpp_ext
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 100
+known_first_party = ["nori_core", "nori_desktop"]
+skip = ["cpp_ext", "build", "dist", ".venv"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # Pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+    "ARG", # flake8-unused-arguments
+    "SIM", # flake8-simplify
+]
+ignore = [
+    "E501",  # line too long (handled by black)
+    "B008",  # do not perform function calls in argument defaults (acceptable for FastAPI)
+    "B904",  # raise without from inside except (acceptable for re-raising)
+]
+extend-exclude = ["cpp_ext", "build", "dist", ".venv"]
+
+[tool.coverage.run]
+branch = true
+source = ["src/nori_core", "src/nori_desktop"]
+omit = [
+    "*/tests/*",
+    "*/__main__.py",
+    "*/conftest.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "@abstractmethod",
+]
+fail_under = 80
