@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import sqlite3
 from pathlib import Path
 from contextlib import asynccontextmanager
 from typing import AsyncIterator, Optional
@@ -50,10 +51,10 @@ class DatabaseManager:
             # Ensure directory exists
             self._db_path.parent.mkdir(parents=True, exist_ok=True)
             
-            # Create connection
+            # Create connection with proper detect_types using sqlite3 constants
             self._pool = await aiosqlite.connect(
                 str(self._db_path),
-                detect_types=aiosqlite.PARSE_DECLTYPES | aiosqlite.PARSE_COLNAMES,
+                detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
             )
             self._pool.row_factory = aiosqlite.Row
             
