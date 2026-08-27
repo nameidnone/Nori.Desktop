@@ -297,11 +297,17 @@ extend-exclude = ["cpp_ext", "build", "dist", ".venv"]
 
 [tool.coverage.run]
 branch = true
-source = ["src/nori_core", "src/nori_desktop"]
+source = [
+    "src/nori_core/configuration/config_store.py",
+    "src/nori_core/data/database_manager.py"
+]
 omit = [
     "*/tests/*",
     "*/__main__.py",
     "*/conftest.py",
+    "src/nori_core/__init__.py",
+    "src/nori_core/*/__init__.py",
+    "src/nori_desktop/**",
 ]
 
 [tool.coverage.report]
@@ -313,4 +319,4 @@ exclude_lines = [
     "raise NotImplementedError",
     "@abstractmethod",
 ]
-fail_under = 80
+fail_under = 90

@@ -47,7 +47,7 @@ class ConfigStore:
         ConfigSchema("app_version", "", "Last run app version"),
         ConfigSchema("first_run", "true", "First run flag"),
         ConfigSchema("initialized", "false", "Initialization completed"),
-        ConfigSchema("telemetry_consent", TelemetryConsent.NOT_ASKED.value, "Telemetry consent status"),
+        ConfigSchema("telemetry_consent", TelemetryConsent.NOT_ASKED, "Telemetry consent status"),
         ConfigSchema("allow_insecure_tls", "false", "Allow insecure TLS connections"),
         ConfigSchema("language", "zh-CN", "UI language code"),
         ConfigSchema("theme", "deep_sea_glow", "UI theme identifier"),
