@@ -17,11 +17,12 @@ venv/
 .env.local
 .env.*
 
-# Editors
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+*.tmp
 
 # Logs and temp files
 *.log
