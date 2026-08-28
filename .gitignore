@@ -1,37 +1,21 @@
 ```
-# Python
-__pycache__/
+# Compiled and build artifacts
 *.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
-.venv/
-.ENV
-.env
-.env.local
-*.env.*
-.venv.bak/
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Build artifacts
+__pycache__/
+*.o
+*.obj
+*.so
+*.dylib
+*.dll
 build/
 dist/
-*.egg
-*.egg-info/
-.eggs/
-.installed.cfg
-*.so
 
-# Testing
-.coverage
-coverage/
-htmlcov/
-.noserc
-.tox/
-.coverage.*
+# Dependencies
+.venv/
+venv/
+.env
+.env.local
+.env.*
 
 # IDE
 .vscode/
@@ -40,7 +24,33 @@ htmlcov/
 *.swo
 *.tmp
 
-# OS
-.DS_Store
-Thumbs.db
+# Logs and temp files
+*.log
+*.tmp
+
+# Coverage
+.coverage
+coverage/
+htmlcov/
+
+# Python specific
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+
+# C++/C extensions
+*.a
+*.lib
+*.out
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Build systems
+cmake-build-*/
+Makefile
 ```
