@@ -1,35 +1,21 @@
 ```
-# Python
-__pycache__/
+# Compiled and build artifacts
 *.pyc
-*.pyo
-*.pyd
-.Python
-venv/
-.venv/
-.env
-.env.local
-*.env.*
-.pytest_cache/
-.mypy_cache/
-.coverage
-htmlcov/
-
-# Build directories
-build/
-dist/
-*.egg-info/
-
-# C++ extensions
+__pycache__/
 *.o
 *.obj
 *.so
 *.dylib
 *.dll
-*.a
+build/
+dist/
 
 # Dependencies
-node_modules/
+.venv/
+venv/
+.env
+.env.local
+.env.*
 
 # Editors
 .vscode/
@@ -37,13 +23,33 @@ node_modules/
 *.swp
 *.swo
 
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
+# Logs and temp files
 *.log
-
-# Temporary files
 *.tmp
+
+# Coverage
+.coverage
+coverage/
+htmlcov/
+
+# Python specific
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+
+# C++/C extensions
+*.a
+*.lib
+*.out
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Build systems
+cmake-build-*/
+Makefile
 ```
