@@ -7,7 +7,7 @@ Nori Core Memory Module - Python 实现
 from __future__ import annotations
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Optional
+from typing import Optional, List
 
 
 class MemoryKind(Enum):
@@ -16,6 +16,7 @@ class MemoryKind(Enum):
     FACT = "fact"  # 事实记忆
     SKILL = "skill"  # 技能记忆
     PREFERENCE = "preference"  # 偏好记忆
+    CONVERSATIONAL = "conversational"  # 对话记忆
 
 
 class MemoryStatus(Enum):
@@ -39,6 +40,22 @@ class MemoryIndexState(Enum):
     INDEXING = "indexing"
     ERROR = "error"
     MAINTENANCE = "maintenance"
+
+
+class MemorySource(Enum):
+    """记忆来源"""
+    CHAT = "chat"
+    USER_INPUT = "user_input"
+    SYSTEM = "system"
+    EXTRACTED = "extracted"
+    IMPORTED = "imported"
+
+
+@dataclass
+class MemoryContent:
+    """记忆内容"""
+    text: str
+    metadata: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -79,7 +96,7 @@ class MemoryAtom:
 
 
 @dataclass
-class MemorySource:
+class MemorySourceItem:
     """重要记忆保留的原始来源消息"""
     id: int
     memory_id: int
@@ -92,30 +109,35 @@ class MemorySource:
 @dataclass
 class MemoryItem:
     """记忆条目"""
-    id: int
+    id: str
     kind: MemoryKind
-    summary: str
-    details: Optional[str] = None
+    status: MemoryStatus
+    source: MemorySource
+    content: MemoryContent
+    embedding: Optional[List[float]] = None
+    strength: float = 1.0
     importance: float = 0.5
-    confidence: float = 0.5
-    status: MemoryStatus = MemoryStatus.ACTIVE
-    created_at: str = ""
-    updated_at: Optional[str] = None
-    tags: list[str] = field(default_factory=list)
-    atom_count: int = 0
-    source_count: int = 0
+    frequency: int = 1
+    created_at: float = 0.0
+    updated_at: float = 0.0
+    last_accessed_at: Optional[float] = None
+    expires_at: Optional[float] = None
+    session_id: Optional[str] = None
+    conversation_id: Optional[str] = None
+    message_id: Optional[str] = None
+    tags: Optional[List[str]] = None
+    entities: Optional[List[str]] = None
 
 
 @dataclass
 class RetrievedKnowledge:
     """知识库检索结果"""
-    id: int
-    heading: str
-    content: str
-    awareness: KnowledgeAwareness
-    score: float
-    subheading: Optional[str] = None
-    knowledge_type: Optional[str] = None
+    memory_id: str
+    content: MemoryContent
+    relevance_score: float
+    kind: MemoryKind
+    created_at: float
+    accessed_at: float
 
 
 @dataclass
@@ -149,52 +171,24 @@ class RecallDebugTrace:
 @dataclass
 class MemoryContext:
     """注入 Agent 的完整记忆上下文"""
-    personal: list[MemoryItem] = field(default_factory=list)
-    atoms: list[MemoryAtom] = field(default_factory=list)
-    knowledge: list[RetrievedKnowledge] = field(default_factory=list)
-    echoes: list[MemoryEcho] = field(default_factory=list)
-    debug: Optional[RecallDebugTrace] = None
+    memories: list[RetrievedKnowledge] = field(default_factory=list)
+    total_tokens: int = 0
+    generated_at: float = 0.0
     
     def to_dict(self) -> dict:
         """转换为字典格式，便于序列化"""
         return {
-            "personal": [
+            "memories": [
                 {
-                    "id": p.id,
-                    "kind": p.kind.value,
-                    "summary": p.summary,
-                    "details": p.details,
-                    "importance": p.importance,
-                    "confidence": p.confidence,
-                    "tags": p.tags,
+                    "memory_id": m.memory_id,
+                    "content": m.content.text,
+                    "relevance_score": m.relevance_score,
+                    "kind": m.kind.value,
                 }
-                for p in self.personal
+                for m in self.memories
             ],
-            "atoms": [
-                {
-                    "id": a.id,
-                    "atomType": a.atom_type,
-                    "content": a.content,
-                    "importance": a.importance,
-                    "confidence": a.confidence,
-                }
-                for a in self.atoms
-            ],
-            "knowledge": [
-                {
-                    "id": k.id,
-                    "heading": k.heading,
-                    "subheading": k.subheading,
-                    "content": k.content,
-                    "score": k.score,
-                }
-                for k in self.knowledge
-            ],
-            "echoes": [
-                {"content": e.content, "score": e.score}
-                for e in self.echoes
-            ],
-            "debug": self.debug.__dict__ if self.debug else None,
+            "total_tokens": self.total_tokens,
+            "generated_at": self.generated_at,
         }
 
 
@@ -257,11 +251,13 @@ __all__ = [
     "MemoryStatus",
     "KnowledgeAwareness",
     "MemoryIndexState",
+    "MemorySource",
     # Data models
+    "MemoryContent",
     "MemoryEmbeddingWorkItem",
     "MemoryEmbeddingUpdate",
     "MemoryAtom",
-    "MemorySource",
+    "MemorySourceItem",
     "MemoryItem",
     "RetrievedKnowledge",
     "MemoryEcho",
